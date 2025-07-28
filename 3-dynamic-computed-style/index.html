@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Dynamic Background Width</title>
   <link rel="stylesheet" href="https://unpkg.com/@picocss/pico@latest/css/pico.min.css">
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
   <style>
     .bar-container {
       background-color: #e0e0e0;
@@ -29,21 +30,44 @@
       type="range" 
       min="0" 
       max="4" 
-      step="1" 
+      step="1" v-model="level"
     />
 
-    <p>Current level: </p>
+    <p>Current level: {{ level }}, {{ widthFill }} </p>
 
 
     <div class="bar-container">
-      <div class="bar-fill"></div>
+      <div class="bar-fill" :style="{ width: widthFill, 'background-color': colorFill }"></div>
     </div>
 
     <div style="margin-top: 1rem">
-      <p>Estás en el nivel más bajo.</p>
-      <p>Estás en el nivel más alto.</p>
+      <p v-if="level==0">Estás en el nivel más bajo.</p>
+      <p v-else-if="level==4">Estás en el nivel más alto.</p>
     </div>
 
   </main>
+
+  <script>
+        const { createApp, ref, computed } = Vue
+
+        createApp({
+            setup() {
+                const level = ref(0)
+                const widthFill = computed(() => {
+                  return `${level.value * 25}%`
+                })
+                const colorFill = computed(() => {
+                  return level.value == 4 ? '#e24a4a' : '#4a90e2'
+                })
+
+                return {
+                  level,
+                  widthFill,
+                  colorFill    
+                
+                }
+            }
+        }).mount('#app')
+    </script>
 </body>
 </html>
